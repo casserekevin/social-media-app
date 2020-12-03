@@ -7,7 +7,7 @@ const firebaseAuthenticationMiddleware = require('./util/middleware/firebaseAuth
 
 //Handlers
 const { getAllScreams, postOneScream } = require('./handlers/screams')
-const { signup, login } = require('./handlers/users')
+const { signup, login, uploadImage } = require('./handlers/users')
 
 //Routes
 //Screams routes
@@ -17,6 +17,7 @@ app.post('/scream', firebaseAuthenticationMiddleware, postOneScream)
 //Users routes
 app.post('/signup', signup)
 app.post('/login', login)
+app.post('/user/image', firebaseAuthenticationMiddleware, uploadImage)
 
 //https://baseurl.com/api/
 exports.api = functions.region('southamerica-east1').https.onRequest(app)
