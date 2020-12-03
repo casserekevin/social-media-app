@@ -7,7 +7,7 @@ const firebaseAuthenticationMiddleware = require('./util/middleware/firebaseAuth
 
 //Handlers
 const { getAllScreams, postOneScream } = require('./handlers/screams')
-const { signup, login, uploadImage } = require('./handlers/users')
+const { signup, login, getUserDetails, addUserDetails, uploadImage } = require('./handlers/users')
 
 //Routes
 //Screams routes
@@ -17,6 +17,8 @@ app.post('/scream', firebaseAuthenticationMiddleware, postOneScream)
 //Users routes
 app.post('/signup', signup)
 app.post('/login', login)
+app.get('/user', firebaseAuthenticationMiddleware, getUserDetails)
+app.post('/user', firebaseAuthenticationMiddleware, addUserDetails)
 app.post('/user/image', firebaseAuthenticationMiddleware, uploadImage)
 
 //https://baseurl.com/api/

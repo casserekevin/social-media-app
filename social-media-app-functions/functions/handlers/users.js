@@ -5,8 +5,7 @@ const firebase = require('firebase')
 firebase.initializeApp(firebaseConfig)
 
 //validation
-const { validateSignupData, validateLoginData } = require('../util/validations/validators')
-const { log } = require('console')
+const { validateSignupData, validateLoginData, reduceUserDetails } = require('../util/validations/validators')
 
 
 exports.signup = (req, res) => {
@@ -95,6 +94,48 @@ exports.login = (req, res) => {
             return res.status(500).json({ error: error.code })
         }
     })
+}
+
+exports.getUserDetails = (req, res) => {
+    let userData = {}
+
+    db.doc(`/users/${req.user.handle}`).get()
+    .then((doc) => {
+        if(doc.exists){
+            userData.credentials = doc.data()
+            return db.collection('likes').where('userHandle', '==', req.user.handle).get()
+        }
+    })
+    .then((data) => {
+        userData.likes = []
+        data.forEach((doc) => {
+            userData.likes.push(doc.data())
+        })
+
+        return res.json(userData)
+    })
+    .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error: error.code })
+    })
+}
+
+exports.addUserDetails = (req, res) => {
+    let { userDetails, valid } = reduceUserDetails(req.body)
+
+    if(!valid){
+        return res.status(400).json({ error: 'At least one field must be updated' })
+    }
+    else{
+        db.doc(`/users/${req.user.handle}`).update(userDetails)
+        .then(() => {
+            return res.json({ message: 'UserDetails updated successfully'})
+        })
+        .catch((error) => {
+            console.error(error);
+            return res.statud(500).json({ error: error.code })
+        })
+    }
 }
 
 exports.uploadImage = (req, res) => {

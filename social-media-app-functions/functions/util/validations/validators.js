@@ -13,6 +13,14 @@ const isEmpty = (string) => {
     return false;
 };
 
+const hasHttpString = (website) => {
+    if (website.trim().substring(0, 4) === 'http') {
+        return true;
+    }
+    return false;
+};
+
+//TODO: Validate users
 exports.validateSignupData = (data) => {
     let errors = {}
     //email
@@ -49,6 +57,28 @@ exports.validateLoginData = (data) => {
     }
 }
 
+exports.reduceUserDetails = (data) => {
+    let userDetails = {}
+
+    if(!isEmpty(data.bio)) userDetails.bio = data.bio
+    if(!isEmpty(data.website)) {
+        if(!hasHttpString(data.website)){
+            userDetails.website = `http://${data.website}`
+        }
+        else userDetails.website = data.website
+    }
+    if(!isEmpty(data.location)) userDetails.location = data.location
+
+    return {
+        userDetails,
+        valid: Object.keys(userDetails).length !== 0 ? true : false
+    }
+}
+
+
+
+
+//TODO: Validate screams
 exports.validatePostOneScreamData = (data) => {
     let errors = {}
     //body
