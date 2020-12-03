@@ -80,6 +80,7 @@ app.post('/signup', (req, res) => {
         handle: req.body.handle,
     }
 
+
     // TODO: validate data
     let errors = {}
     //email
@@ -145,6 +146,7 @@ app.post('/login', (req, res) => {
         password: req.body.password
     }
 
+
     // TODO: validate data
     let errors = {}
     //email
@@ -157,6 +159,26 @@ app.post('/login', (req, res) => {
     //possui algum erro?
     if(Object.keys(errors).length > 0) return res.status(400).json(errors)
 
+
+    firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+    .then((data) => {
+        return data.user.getIdToken()
+    })
+    .then((token) => {
+        return res.json({ token })
+    })
+    .catch((error) => {
+        console.error(error)
+        if(error.code === 'auth/user-not-found'){
+            return res.status(403).json({ general: 'Invalid email, please try again' })
+        }
+        else if(error.code === 'auth/wrong-password'){
+            return res.status(403).json({ general: 'Invalid password, please try again' })
+        }
+        else{
+            return res.status(500).json({ error: error.code })
+        }
+    })
 })
 
 
