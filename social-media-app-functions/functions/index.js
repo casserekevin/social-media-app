@@ -20,6 +20,36 @@ firebase.initializeApp(firebaseConfig)
 
 const db = admin.firestore()
 
+
+// TODO: Middleware
+const firebaseAuthenticationMiddleware = (req, res, next) => {
+    let idToken
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer ')){
+        idToken = req.headers.authorization.split('Bearer ')[1]
+    }
+    else{
+        console.error('No token found')
+        return res.status(403).json({ error: 'Unauthorized token'})
+    }
+
+    admin.auth().verifyIdToken(idToken)
+    .then((decodedToken) => {
+        req.user = decodedToken
+        
+        return db.collection('users').where('userId', '==', req.user.uid).limit(1).get()
+        .then((data) => {
+            req.user.handle = data.docs[0].data().handle
+            return next()
+        })
+
+    })
+    .catch((error) => {
+        console.error('Error while verifying token -> ', error)
+        return res.status(403).json(error)
+    })
+}
+
+
 app.get('/screams', (req, res) => {
     db.collection('screams').orderBy('createdAt', 'desc').get()
     .then((data) => {
@@ -37,12 +67,23 @@ app.get('/screams', (req, res) => {
     })
 })
 
-app.post('/scream', (req, res) => {
+
+app.post('/scream', firebaseAuthenticationMiddleware, (req, res) => {
     const newScream = {
         body: req.body.body,
-        userHandle: req.body.userHandle,
+        userHandle: req.user.handle,
         createdAt: new Date().toISOString()
     }
+
+
+    // TODO: validate data
+    let errors = {}
+    //body
+    if(isEmpty(newScream.body)) errors.body = 'Must not be empty'
+
+    //possui algum erro?
+    if(Object.keys(errors).length > 0) return res.status(400).json(errors)
+
 
     db.collection('screams').add(newScream)
     .then((data) => {
@@ -180,6 +221,8 @@ app.post('/login', (req, res) => {
         }
     })
 })
+
+
 
 
 //https://baseurl.com/api/
