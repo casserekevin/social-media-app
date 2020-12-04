@@ -17,6 +17,7 @@ module.exports = (req, res, next) => {
         return db.collection('users').where('userId', '==', req.user.uid).limit(1).get()
         .then((data) => {
             req.user.handle = data.docs[0].data().handle
+            req.user.imageUrl = data.docs[0].data().imageUrl
             return next()
         })
 

@@ -89,3 +89,14 @@ exports.validatePostOneScreamData = (data) => {
         valid: Object.keys(errors).length === 0 ? true : false
     }
 }
+
+exports.validatePostOneCommentData = (data) => {
+    let errors = {}
+    //body
+    if(isEmpty(data.body)) errors.body = 'Must not be empty'
+
+    return {
+        errors,
+        valid: Object.keys(errors).length === 0 ? true : false
+    }
+}
