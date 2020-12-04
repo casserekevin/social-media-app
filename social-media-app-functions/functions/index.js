@@ -5,7 +5,7 @@ const app = require('express')()
 const firebaseAuthenticationMiddleware = require('./util/middleware/firebaseAuthenticationMiddleware')
 
 //Handlers
-const { getAllScreams, getOneScream, postOneScream, postOneComment } = require('./handlers/screams')
+const { getAllScreams, getOneScream, postOneScream, deleteOneScream, likeOneScream, unlikeOneScream, postOneComment } = require('./handlers/screams')
 const { signup, login, getUserDetails, addUserDetails, uploadImage } = require('./handlers/users')
 
 //Routes
@@ -13,6 +13,10 @@ const { signup, login, getUserDetails, addUserDetails, uploadImage } = require('
 app.get('/screams', getAllScreams)
 app.get('/scream/:screamId', getOneScream)
 app.post('/scream', firebaseAuthenticationMiddleware, postOneScream)
+app.delete('/scream/:screamId', firebaseAuthenticationMiddleware, deleteOneScream)
+//others routes
+app.get('/scream/:screamId/like', firebaseAuthenticationMiddleware, likeOneScream)
+app.get('/scream/:screamId/unlike', firebaseAuthenticationMiddleware, unlikeOneScream)
 app.post('/scream/:screamId/comment', firebaseAuthenticationMiddleware, postOneComment)
 
 //Users routes
