@@ -59,7 +59,7 @@ exports.signup = (req, res) => {
             return res.status(400).json({ email: 'this email is already taken' })
         }
         else{
-            return res.status(500).json({ error: error.code })
+            return res.status(500).json({ general: 'Something went wrong, please try again' })
         }
     })
 }
@@ -84,15 +84,11 @@ exports.login = (req, res) => {
     })
     .catch((error) => {
         console.error(error)
-        if(error.code === 'auth/user-not-found'){
-            return res.status(403).json({ general: 'Invalid email, please try again' })
-        }
-        else if(error.code === 'auth/wrong-password'){
-            return res.status(403).json({ general: 'Invalid password, please try again' })
-        }
-        else{
-            return res.status(500).json({ error: error.code })
-        }
+
+        //auth/user-not-found
+        //auth/wrong-password
+        return res.status(403).json({ general: 'Wrong credentials, please try again' })
+        
     })
 }
 

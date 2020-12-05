@@ -36,9 +36,9 @@ exports.api = functions.region('southamerica-east1').https.onRequest(app)
 //TRIGGERS
 //create notifications:like
 exports.createNotificationsOnLike = functions.region('southamerica-east1').firestore.document('likes/{id}').onCreate((snapshot) => {
-    db.doc(`screams/${snapshot.data().screamId}`).get()
+    return db.doc(`screams/${snapshot.data().screamId}`).get()
     .then((doc) => {
-        if(doc.exists){
+        if(doc.exists && doc.data().userHandle !== snapshot.data().userHandle){
             return db.doc(`notifications/${snapshot.id}`).set({
                 recipient: doc.data().userHandle,
                 sender: snapshot.data().userHandle,
@@ -49,32 +49,24 @@ exports.createNotificationsOnLike = functions.region('southamerica-east1').fires
             })
         }
     })
-    .then(() => {
-        return
-    })
     .catch((error) => {
         console.error(error);
-        return
     })
 })
 
 //delete notifications:unlike
 exports.deleteNotificationsOnUnlike = functions.region('southamerica-east1').firestore.document('likes/{id}').onDelete((snapshot) => {
-    db.doc(`notifications/${snapshot.id}`).delete()
-    .then(() => {
-        return
-    })
+    return db.doc(`notifications/${snapshot.id}`).delete()
     .catch((error) => {
         console.error(error);
-        return
     })
 })
 
 //create notifications:comment
 exports.createNotificationsOnComment = functions.region('southamerica-east1').firestore.document('comments/{id}').onCreate((snapshot) => {
-    db.doc(`screams/${snapshot.data().screamId}`).get()
+    return db.doc(`screams/${snapshot.data().screamId}`).get()
     .then((doc) => {
-        if(doc.exists){
+        if(doc.exists && doc.data().userHandle !== snapshot.data().userHandle){
             return db.doc(`notifications/${snapshot.id}`).set({
                 recipient: doc.data().userHandle,
                 sender: snapshot.data().userHandle,
@@ -85,11 +77,56 @@ exports.createNotificationsOnComment = functions.region('southamerica-east1').fi
             })
         }
     })
-    .then(() => {
-        return
+    .catch((error) => {
+        console.error(error);
+    })
+})
+
+exports.updateScreamsImageOnUserImageUpdate = functions.region('southamerica-east1').firestore.document('users/{id}').onUpdate((snapshot) => {
+    
+    if(snapshot.before.data().imageUrl !== snapshot.after.data().imageUrl){
+        const batch = db.batch()
+        return db.collection('screams').where('userHandle', '==', snapshot.before.data().handle).get()
+        .then((data) => {
+            data.forEach((doc) => {
+                const scream = db.doc(`/screams/${doc.id}`)
+                batch.update(scream, { userImage: snapshot.after.data().imageUrl })
+            })
+    
+            return batch.commit()
+        })
+    }
+    else {
+        return true
+    }
+})
+
+exports.deleteCommentsAndLikesAndNotificationsOnScreamDelete = functions.region('southamerica-east1').firestore.document('screams/{id}').onDelete((snapshot, context) => {
+    const screamId = context.params.id
+
+    const batch = db.batch()
+
+    return db.collection('comments').where('screamId', '==', screamId).get()
+    .then((data) => {
+        data.forEach((doc) => {
+            batch.delete(db.doc(`/comments/${doc.id}`))
+        })
+        return db.collection('likes').where('screamId', '==', screamId).get()
+    })
+    .then((data) => {
+        data.forEach((doc) => {
+            batch.delete(db.doc(`/likes/${doc.id}`))
+        })
+        return db.collection('notifications').where('screamId', '==', screamId).get()
+    })
+    .then((data) => {
+        data.forEach((doc) => {
+            batch.delete(db.doc(`/notifications/${doc.id}`))
+        })
+        return batch.commit()
     })
     .catch((error) => {
         console.error(error);
-        return
     })
+
 })

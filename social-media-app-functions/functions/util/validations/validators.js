@@ -93,7 +93,7 @@ exports.validatePostOneScreamData = (data) => {
 exports.validatePostOneCommentData = (data) => {
     let errors = {}
     //body
-    if(isEmpty(data.body)) errors.body = 'Must not be empty'
+    if(isEmpty(data.body)) errors.comment = 'Must not be empty'
 
     return {
         errors,

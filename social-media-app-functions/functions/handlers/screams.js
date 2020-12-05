@@ -9,8 +9,8 @@ exports.getAllScreams = (req, res) => {
         let screams = []
         data.forEach((doc) => {
             screams.push({
+                ...doc.data(),
                 screamId: doc.id,
-                ...doc.data()
             })
         })
         return res.json(screams)
