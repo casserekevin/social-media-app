@@ -96,7 +96,36 @@ exports.login = (req, res) => {
     })
 }
 
-exports.getUserDetails = (req, res) => {
+exports.getPublicUserDetails = (req, res) => {
+    let userData = {}
+
+    db.doc(`/users/${req.params.handle}`).get()
+    .then((doc) => {
+        if(!doc.exists){
+            return res.status(404).json({ error: 'User not found' })
+        }
+
+        userData.user = doc.data()
+        return db.collection('screams').where('userHandle', '==', req.params.handle).orderBy('createdAt', 'desc').get()
+    })
+    .then((data) => {
+        userData.screams = []
+        data.forEach((doc) => {
+            userData.screams.push({
+                ...doc.data(),
+                screamId: doc.id
+            })
+        })
+
+        return res.json(userData)
+    })
+    .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error: error.code })
+    })
+}
+
+exports.getAuthenticatedUserDetails = (req, res) => {
     let userData = {}
 
     db.doc(`/users/${req.user.handle}`).get()
@@ -202,4 +231,22 @@ exports.uploadImage = (req, res) => {
         })
     })
     busboy.end(req.rawBody)
+}
+
+exports.markNotificationsAsRead = (req, res) => {
+    let batch = db.batch()
+
+    req.body.forEach((notificationId) => {
+        const notification = db.doc(`notifications/${notificationId}`)
+        batch.update(notification, { read: true })
+    })
+
+    batch.commit()
+    .then(() => {
+        return res.json({ message: 'Notifications marked read' })
+    })
+    .catch((error) => {
+        console.error(error);
+        return res.status(500).json({ error: error.code })
+    })
 }

@@ -8,7 +8,7 @@ const firebaseAuthenticationMiddleware = require('./util/middleware/firebaseAuth
 
 //Handlers
 const { getAllScreams, getOneScream, postOneScream, deleteOneScream, likeOneScream, unlikeOneScream, postOneComment } = require('./handlers/screams')
-const { signup, login, getUserDetails, addUserDetails, uploadImage } = require('./handlers/users')
+const { signup, login, getPublicUserDetails, getAuthenticatedUserDetails, addUserDetails, uploadImage, markNotificationsAsRead } = require('./handlers/users')
 
 //Routes
 //Screams routes
@@ -16,7 +16,6 @@ app.get('/screams', getAllScreams)
 app.get('/scream/:screamId', getOneScream)
 app.post('/scream', firebaseAuthenticationMiddleware, postOneScream)
 app.delete('/scream/:screamId', firebaseAuthenticationMiddleware, deleteOneScream)
-//others routes
 app.get('/scream/:screamId/like', firebaseAuthenticationMiddleware, likeOneScream)
 app.get('/scream/:screamId/unlike', firebaseAuthenticationMiddleware, unlikeOneScream)
 app.post('/scream/:screamId/comment', firebaseAuthenticationMiddleware, postOneComment)
@@ -24,16 +23,19 @@ app.post('/scream/:screamId/comment', firebaseAuthenticationMiddleware, postOneC
 //Users routes
 app.post('/signup', signup)
 app.post('/login', login)
-app.get('/user', firebaseAuthenticationMiddleware, getUserDetails)
+app.get('/user/:handle', getPublicUserDetails)
+app.get('/user', firebaseAuthenticationMiddleware, getAuthenticatedUserDetails)
 app.post('/user', firebaseAuthenticationMiddleware, addUserDetails)
 app.post('/user/image', firebaseAuthenticationMiddleware, uploadImage) 
+
+app.post('/notifications', firebaseAuthenticationMiddleware, markNotificationsAsRead) 
 
 //https://baseurl.com/api/
 exports.api = functions.region('southamerica-east1').https.onRequest(app)
 
+//TRIGGERS
 //create notifications:like
-exports.createNotificationsOnLike = functions.region('southamerica-east1').firestore.document('likes/{id}')
-.onCreate((snapshot) => {
+exports.createNotificationsOnLike = functions.region('southamerica-east1').firestore.document('likes/{id}').onCreate((snapshot) => {
     db.doc(`screams/${snapshot.data().screamId}`).get()
     .then((doc) => {
         if(doc.exists){
@@ -57,8 +59,7 @@ exports.createNotificationsOnLike = functions.region('southamerica-east1').fires
 })
 
 //delete notifications:unlike
-exports.deleteNotificationsOnUnlike = functions.region('southamerica-east1').firestore.document('likes/{id}')
-.onDelete((snapshot) => {
+exports.deleteNotificationsOnUnlike = functions.region('southamerica-east1').firestore.document('likes/{id}').onDelete((snapshot) => {
     db.doc(`notifications/${snapshot.id}`).delete()
     .then(() => {
         return
@@ -70,8 +71,7 @@ exports.deleteNotificationsOnUnlike = functions.region('southamerica-east1').fir
 })
 
 //create notifications:comment
-exports.createNotificationsOnComment = functions.region('southamerica-east1').firestore.document('comments/{id}')
-.onCreate((snapshot) => {
+exports.createNotificationsOnComment = functions.region('southamerica-east1').firestore.document('comments/{id}').onCreate((snapshot) => {
     db.doc(`screams/${snapshot.data().screamId}`).get()
     .then((doc) => {
         if(doc.exists){
