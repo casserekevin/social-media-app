@@ -13,11 +13,20 @@ html, body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+    min-height: 100vh;
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
-#root {
-    min-height: 100vh;
+.container{
+    margin: 80px auto 0 auto;
+    max-width: 1200px;
+}
+
+.nav-container {
+    margin: auto;
 }
