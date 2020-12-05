@@ -82,6 +82,7 @@ exports.createNotificationsOnComment = functions.region('southamerica-east1').fi
     })
 })
 
+//update scream image:user image update
 exports.updateScreamsImageOnUserImageUpdate = functions.region('southamerica-east1').firestore.document('users/{id}').onUpdate((snapshot) => {
     
     if(snapshot.before.data().imageUrl !== snapshot.after.data().imageUrl){
@@ -101,6 +102,7 @@ exports.updateScreamsImageOnUserImageUpdate = functions.region('southamerica-eas
     }
 })
 
+//delete comments and likes and notifications:scream delete
 exports.deleteCommentsAndLikesAndNotificationsOnScreamDelete = functions.region('southamerica-east1').firestore.document('screams/{id}').onDelete((snapshot, context) => {
     const screamId = context.params.id
 
