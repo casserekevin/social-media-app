@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid'
 
 import Scream from '../components/Scream'
 
-class Home extends Component {
+class home extends Component {
     state = {
         screams: null
     }
@@ -42,4 +42,4 @@ class Home extends Component {
     }
 }
 
-export default Home
+export default home
