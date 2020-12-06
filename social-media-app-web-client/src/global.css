@@ -11,6 +11,8 @@ html, body {
     sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    background-color: rgb(245, 245, 245);
 }
 
 html {
@@ -29,4 +31,8 @@ code {
 
 .nav-container {
     margin: auto;
+}
+
+a{
+    text-decoration: none;
 }
