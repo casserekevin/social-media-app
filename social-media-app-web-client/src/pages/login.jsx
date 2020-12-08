@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 import PropTypes from 'prop-types'
 
 //material UI imports
@@ -49,7 +48,6 @@ class login extends Component {
             password: this.state.password
         }
         this.props.loginUser(userData, this.props.history)
-
     }
 
     handleChange = (event) => {
@@ -93,9 +91,9 @@ class login extends Component {
 
 login.propTypes = {
     classes: PropTypes.object.isRequired,
-    loginUser: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
-    UI: PropTypes.object.isRequired   
+    UI: PropTypes.object.isRequired,
+    loginUser: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({

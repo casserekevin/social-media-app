@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 import PropTypes from 'prop-types'
 
 //material UI imports
@@ -11,8 +10,13 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
+//redux imports
+import { connect } from 'react-redux'
+import { signupUser, logoutUser } from '../redux/actions/userActions'
+
 //image imports
 import ApeImage from '../images/icon.png'
+
 
 const styles = (theme) => ({
     ...theme.spreadThis
@@ -27,8 +31,15 @@ class signup extends Component {
             password: '',
             confirmPassword: '',
             handle: '',
-            loading: false,
             errors: {}
+        }
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps.UI.errors){
+            this.setState({
+                errors: nextProps.UI.errors
+            })
         }
     }
     
@@ -43,21 +54,7 @@ class signup extends Component {
             confirmPassword: this.state.confirmPassword,
             handle: this.state.handle
         }
-        axios.post('/signup', newUserData)
-        .then((result) => {
-            localStorage.setItem('FirebaseAuthenticationToken', `Bearer ${result.data.token}`)
-            this.setState({
-                loading: false
-            })
-            this.props.history.push('/')
-        })
-        .catch((error) => {
-            this.setState({
-                errors: error.response.data,
-                loading: false
-            })
-        })
-
+        this.props.signupUser(newUserData, this.props.history)
     }
 
     handleChange = (event) => {
@@ -68,8 +65,8 @@ class signup extends Component {
 
 
     render() {
-        const { classes } = this.props
-        const { loading, errors } = this.state
+        const { classes, UI: { loading } } = this.props
+        const { errors } = this.state
         return (
             <Grid container className={classes.form}>
                 <Grid item sm/>
@@ -102,7 +99,21 @@ class signup extends Component {
 }
 
 signup.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired,
+    UI: PropTypes.object.isRequired,
+    signupUser: PropTypes.func.isRequired,
+    logoutUser: PropTypes.func.isRequired
 }
 
-export default withStyles(styles)(signup)
+const mapStateToProps = (state) => ({
+    user: state.user,
+    UI: state.UI
+})
+
+const mapActionsToProps = {
+    signupUser,
+    logoutUser
+}
+
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(signup)) 

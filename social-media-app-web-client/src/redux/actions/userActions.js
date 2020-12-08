@@ -1,4 +1,4 @@
-import { SET_USER, SET_ERRORS, LOADING_UI, CLEAR_ERRORS } from '../types'
+import { SET_USER, SET_ERRORS, LOADING_UI, CLEAR_ERRORS, SET_UNAUTHENTICATED } from '../types'
 import axios from 'axios'
 
 export const loginUser = (userData, history) => (dispatch) => {
@@ -8,9 +8,7 @@ export const loginUser = (userData, history) => (dispatch) => {
 
     axios.post('/login', userData)
     .then((result) => {
-        const firebaseAuthenticationToken = `Bearer ${result.data.token}`
-        localStorage.setItem('FirebaseAuthenticationToken', firebaseAuthenticationToken)
-        axios.defaults.headers.common['Authorization'] = firebaseAuthenticationToken
+        setAuthorizationHeader(result.data.token)
         dispatch(getUserData())
         dispatch({ 
             type: CLEAR_ERRORS 
@@ -25,6 +23,36 @@ export const loginUser = (userData, history) => (dispatch) => {
     })
 }
 
+export const signupUser = (newUserData, history) => (dispatch) => {
+    dispatch({ 
+        type: LOADING_UI 
+    })
+
+    axios.post('/signup', newUserData)
+    .then((result) => {
+        setAuthorizationHeader(result.data.token)
+        dispatch(getUserData())
+        dispatch({ 
+            type: CLEAR_ERRORS 
+        })
+        history.push('/')
+    })
+    .catch((error) => {
+        dispatch({
+            type: SET_ERRORS,
+            payload: error.response.data
+        })
+    })
+}
+
+export const logoutUser = () => (dispatch) => {
+    localStorage.removeItem('FirebaseAuthenticationToken')
+    delete axios.defaults.headers.common['Authorization']
+    dispatch({
+        type: SET_UNAUTHENTICATED
+    })
+}
+
 export const getUserData = () => (dispatch) => {
     axios.get('/user')
     .then((result) => {
@@ -34,4 +62,10 @@ export const getUserData = () => (dispatch) => {
         })
     })
     .catch((error) => console.log(error))
+}
+
+const setAuthorizationHeader = (token) => {
+    const firebaseAuthenticationToken = `Bearer ${token}`
+    localStorage.setItem('FirebaseAuthenticationToken', firebaseAuthenticationToken)
+    axios.defaults.headers.common['Authorization'] = firebaseAuthenticationToken
 }
