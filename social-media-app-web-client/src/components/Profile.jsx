@@ -14,16 +14,21 @@ import MuiLink from '@material-ui/core/Link'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 //Icons
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LinkIcon from '@material-ui/icons/Link'
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday'
 import EditIcon from '@material-ui/icons/Edit'
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn'
 
 //Redux imports
 import { connect } from 'react-redux'
 import { logoutUser, uploadImage } from '../redux/actions/userActions'
+
+//Created Components imports
+import EditDetails from './EditDetails'
 
 
 const styles = (theme) => ({
@@ -71,6 +76,9 @@ const styles = (theme) => ({
         '& a': {
             margin: '20px 10px'
         }
+    },
+    circular: {
+        textAlign: 'center'
     }
 })
 
@@ -87,6 +95,10 @@ class Profile extends Component {
     handleEditPicture = () => {
         const fileInput = document.getElementById('imageInput')
         fileInput.click()
+    }
+
+    handleLogout = () => {
+        this.props.logoutUser()
     }
 
     render() {
@@ -135,6 +147,12 @@ class Profile extends Component {
                             <CalendarTodayIcon color="primary"/>{' '}
                             <span>Joined {dayjs(createdAt).format('MMM YYYY')}</span>
                         </div>
+                        <Tooltip title="Logout" placement="top">
+                            <IconButton onClick={this.handleLogout}>
+                                <KeyboardReturnIcon color="primary"/>
+                            </IconButton>
+                        </Tooltip>
+                        <EditDetails/>
                     </div>
                 </Paper>
             ) : (
@@ -147,7 +165,11 @@ class Profile extends Component {
                 </Paper>
             )
         ) : (
-            <p>loading...</p>
+            <Paper className={classes.paper}>
+                <div className={classes.circular}>
+                    <CircularProgress size={30}/>
+                </div>
+            </Paper>
         )
 
         return profileMarkup
