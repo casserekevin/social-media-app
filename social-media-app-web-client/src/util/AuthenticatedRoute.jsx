@@ -6,14 +6,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 
-const AuthenticatedRoute = ({ component: Component, authenticated, ...rest }) => {
+const AuthenticatedRoute = ({ component: Component, user: { authenticated }, ...rest }) => {
     return (
         <Route {...rest} render={(props) => authenticated === true ? <Redirect to='/'/> : <Component {...props}/> }/>
     )
 }
 
 const mapStateToProps = (state) => ({
-    authenticated: state.user.authenticated     
+    user: state.user     
 })
 
 AuthenticatedRoute.propTypes = {
