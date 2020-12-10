@@ -159,21 +159,22 @@ exports.getAuthenticatedUserDetails = (req, res) => {
 }
 
 exports.addUserDetails = (req, res) => {
-    let { userDetails, valid } = reduceUserDetails(req.body)
+    let sourceUserDetails = {
+        bio: req.body.bio,
+        website: req.body.website,
+        location: req.body.location,
+    }
 
-    if(!valid){
-        return res.status(400).json({ error: 'At least one field must be updated' })
-    }
-    else{
-        db.doc(`/users/${req.user.handle}`).update(userDetails)
-        .then(() => {
-            return res.json({ message: 'UserDetails updated successfully'})
-        })
-        .catch((error) => {
-            console.error(error);
-            return res.statud(500).json({ error: error.code })
-        })
-    }
+    let newUserDetails = reduceUserDetails(sourceUserDetails)
+
+    db.doc(`/users/${req.user.handle}`).update(newUserDetails)
+    .then(() => {
+        return res.json({ message: 'UserDetails updated successfully'})
+    })
+    .catch((error) => {
+        console.error(error);
+        return res.statud(500).json({ error: error.code })
+    })
 }
 
 exports.uploadImage = (req, res) => {

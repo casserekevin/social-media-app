@@ -78,15 +78,25 @@ export const uploadImage = (formData) => (dispatch) => {
     .catch((error) => console.log(error))
 }
 
-export const editUserDetails = (userDetails) => (dispatch) => {
+export const editUserDetails = (userDetails, callback) => (dispatch) => {
     dispatch({
-        type: LOADING_USER
+        type: LOADING_UI
     })
     axios.post('/user', userDetails)
     .then(() => {
         dispatch(getUserData())
+
+        dispatch({ 
+            type: CLEAR_ERRORS 
+        })
+        callback()
     })
-    .catch((error) => console.log(error))
+    .catch((error) => {
+        dispatch({
+            type: SET_ERRORS,
+            payload: error.response.data
+        })
+    })
 }
 
 const setAuthorizationHeader = (token) => {

@@ -13,7 +13,7 @@ const themeFile = {
           contrastText: '#fff'
         }
     },
-    spreadThis: {
+    global: {
         typography: {
             useNextVariants: true
         },

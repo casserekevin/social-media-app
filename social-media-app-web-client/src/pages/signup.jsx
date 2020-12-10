@@ -19,7 +19,7 @@ import ApeImage from '../images/icon.png'
 
 
 const styles = (theme) => ({
-    ...theme.spreadThis
+    ...theme.global
 })
 
 

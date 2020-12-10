@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react'
-import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 //Material UI imports
@@ -12,6 +11,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Typography from '@material-ui/core/Typography'
 
 //Icons
 import EditIcon from '@material-ui/icons/Edit'
@@ -21,18 +21,30 @@ import { connect } from 'react-redux'
 import { editUserDetails } from '../redux/actions/userActions'
 
 const styles = (theme) => ({
-    ...theme.spreadThis,
+    ...theme.global,
     button: {
         float: 'right'
     }
 })
 
 class EditDetails extends Component {
-    state = {
-        bio: '',
-        website: '',
-        location: '',
-        open: false
+    constructor(){
+        super()
+        this.state = {
+            bio: '',
+            website: '',
+            location: '',
+            open: false,
+            errors: {}
+        }
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps.UI.errors){
+            this.setState({
+                errors: nextProps.UI.errors
+            })
+        }
     }
 
     mapUserDetailsToState = (credentials) => {
@@ -50,12 +62,9 @@ class EditDetails extends Component {
     }
 
     handleOpen = () => {
-        const { user: { credentials } } = this.props
-
         this.setState({
             open: true
         })
-        this.mapUserDetailsToState(credentials)
     }
 
     handleClose = () => {
@@ -79,12 +88,12 @@ class EditDetails extends Component {
             location: this.state.location,
         }
 
-        this.props.editUserDetails(userDetails)
-        this.handleClose()
+        this.props.editUserDetails(userDetails, this.handleClose)
     }
 
     render() {
         const { classes } = this.props
+        const { errors } = this.state
 
         return (
             <Fragment>
@@ -100,6 +109,11 @@ class EditDetails extends Component {
                             <TextField name="bio" type='text' label='Bio' rows="3" placeholder="A short bio about yourself" multiline fullWidth value={this.state.bio} onChange={this.handleChange} className={classes.textField}></TextField>
                             <TextField name="website" type='text' label='Website' placeholder="Your personal/professional website" fullWidth value={this.state.website} onChange={this.handleChange} className={classes.textField}></TextField>
                             <TextField name="location" type='text' label='Location' placeholder="Where you live?" fullWidth value={this.state.location} onChange={this.handleChange} className={classes.textField}></TextField>
+                            {errors.general && (
+                                <Typography variant='body2' className={classes.customError}>
+                                    {errors.general}
+                                </Typography>
+                            )}
                         </form>
                     </DialogContent>
                     <DialogActions>
@@ -115,11 +129,13 @@ class EditDetails extends Component {
 EditDetails.propTypes = {
     classes: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
+    UI: PropTypes.object.isRequired,
     editUserDetails: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
-    user: state.user
+    user: state.user,
+    UI: state.UI
 })
 
 const mapActionsToProps = {

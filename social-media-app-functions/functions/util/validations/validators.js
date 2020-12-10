@@ -58,21 +58,28 @@ exports.validateLoginData = (data) => {
 }
 
 exports.reduceUserDetails = (data) => {
-    let userDetails = {}
+    let newUserDetails = {
+        bio: "",
+        website: "",
+        location: ""
+    }
 
-    if(!isEmpty(data.bio)) userDetails.bio = data.bio
+    if(!isEmpty(data.bio)){
+        newUserDetails.bio = data.bio
+    } 
     if(!isEmpty(data.website)) {
         if(!hasHttpString(data.website)){
-            userDetails.website = `http://${data.website}`
+            newUserDetails.website = `http://${data.website}`
         }
-        else userDetails.website = data.website
+        else {
+            newUserDetails.website = data.website
+        }
     }
-    if(!isEmpty(data.location)) userDetails.location = data.location
+    if (!isEmpty(data.location)) {
+        newUserDetails.location = data.location
+    } 
 
-    return {
-        userDetails,
-        valid: Object.keys(userDetails).length !== 0 ? true : false
-    }
+    return newUserDetails
 }
 
 
