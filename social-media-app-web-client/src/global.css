@@ -33,6 +33,10 @@ code {
     margin: auto;
 }
 
+.nav-container svg {
+    color: #ffffff
+}
+
 a{
     text-decoration: none;
 }

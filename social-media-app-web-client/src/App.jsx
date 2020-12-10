@@ -15,7 +15,7 @@ import themeFile from './util/theme'
 
 //components
 import Navbar from './components/Navbar'
-import AuthenticatedRoute from './util/AuthenticatedRoute'
+import AuthenticatedRoute from './util/components/AuthenticatedRoute'
 
 //redux imports
 import { Provider } from 'react-redux'
