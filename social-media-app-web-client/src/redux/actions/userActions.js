@@ -1,19 +1,20 @@
-import { SET_USER, SET_ERRORS, LOADING_UI, CLEAR_ERRORS, SET_UNAUTHENTICATED, LOADING_USER } from '../types'
+import { SET_USER, SET_ERRORS, LOADING_UI, CLEAR_ERRORS_UI, SET_UNAUTHENTICATED, LOADING_USER } from '../types'
+import { getScreams } from './dataActions'
 import axios from 'axios'
 
 export const loginUser = (userData, history) => (dispatch) => {
     dispatch({ 
-        type: LOADING_UI 
+        type: LOADING_UI //ui
     })
 
     axios.post('/login', userData)
     .then((result) => {
         setAuthorizationHeader(result.data.token)
+        dispatch(getScreams(true, () => dispatch({ type: CLEAR_ERRORS_UI }), history))
         dispatch(getUserData())
-        dispatch({ 
-            type: CLEAR_ERRORS 
-        })
-        history.push('/')
+        // dispatch({ 
+        //     type: CLEAR_ERRORS //ui
+        // })
     })
     .catch((error) => {
         dispatch({
@@ -33,7 +34,7 @@ export const signupUser = (newUserData, history) => (dispatch) => {
         setAuthorizationHeader(result.data.token)
         dispatch(getUserData())
         dispatch({ 
-            type: CLEAR_ERRORS 
+            type: CLEAR_ERRORS_UI 
         })
         history.push('/')
     })
@@ -87,7 +88,7 @@ export const editUserDetails = (userDetails, callback) => (dispatch) => {
         dispatch(getUserData())
 
         dispatch({ 
-            type: CLEAR_ERRORS 
+            type: CLEAR_ERRORS_UI 
         })
         callback()
     })
