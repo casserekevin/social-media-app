@@ -1,4 +1,4 @@
-import { SET_SCREAMS, LOADING_DATA, LIKE_SCREAM, UNLIKE_SCREAM } from '../types'
+import { LOADING_DATA, SET_SCREAMS, DELETE_SCREAM, LIKE_SCREAM, UNLIKE_SCREAM } from '../types'
 import axios from 'axios'
 
 export const getScreams = () => (dispatch) => {
@@ -41,6 +41,23 @@ export const unlikeScream = (screamId) => (dispatch) => {
             type: UNLIKE_SCREAM,
             payload: result.data
         })
+    })
+    .catch((error) => {
+        console.error(error)
+    })
+}
+
+export const deleteScream = (screamId, callback) => (dispatch) => {
+    axios.delete(`/scream/${screamId}`)
+    .then((result) => {
+        dispatch({
+            type: DELETE_SCREAM,
+            payload: screamId
+        })
+
+        if(callback !== undefined){
+            callback()
+        }
     })
     .catch((error) => {
         console.error(error)

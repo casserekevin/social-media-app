@@ -24,10 +24,12 @@ import { connect } from 'react-redux'
 import { likeScream, unlikeScream } from '../redux/actions/dataActions'
 
 //Created Components imports
+import DeleteScream from './DeleteScream'
 import MyButton from '../util/components/MyButton'
 
 const styles = {
     card: {
+        position: 'relative',
         display: 'flex',
         marginBottom: 20
     },
@@ -60,7 +62,7 @@ class Scream extends Component {
     render() {
         dayjs.extend(relativeTime).locale(ptbr)
 
-        const { classes, scream : { body, createdAt, userImage, userHandle, screamId, likeCount, commentCount }, user: { authenticated } } = this.props
+        const { classes, scream : { body, createdAt, userImage, userHandle, screamId, likeCount, commentCount }, user: { authenticated, credentials: { handle } } } = this.props
 
         const likeButton = (authenticated) ? (
             (this.likedScream()) ? (
@@ -79,11 +81,19 @@ class Scream extends Component {
                 </Link>
             </MyButton>
         )
+
+        const deleteButton = (authenticated && userHandle === handle) ? (
+            <DeleteScream screamId={screamId}/>
+        ) : (
+            null
+        )
+
         return (
             <Card className={classes.card}>
                 <CardMedia image={userImage} title="Profile image" className={classes.image}/>
                 <CardContent className={classes.content}>
                     <Typography variant="h5" color="primary" component={Link} to={`/users/${userHandle}`}>{userHandle}</Typography>
+                    {deleteButton}
                     <Typography variant="body2" color="textSecondary">{dayjs(createdAt).fromNow()}</Typography>
                     <Typography variant="body1">{body}</Typography>
 
