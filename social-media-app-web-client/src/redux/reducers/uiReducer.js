@@ -1,4 +1,4 @@
-import {  SET_ERRORS, CLEAR_ERRORS_UI, LOADING_UI } from '../types'
+import { LOADING_UI, OK_UI, ERROR_UI } from '../types'
 
 const initialState = {
     loading: false,
@@ -7,26 +7,22 @@ const initialState = {
 
 const uiReducer = function(state = initialState, action){
     switch(action.type){
-        case SET_ERRORS:
-            return {
-                ...state,
-                loading: false,
-                errors: action.payload
-            }
-        
-        case CLEAR_ERRORS_UI:
-            return {
-                ...state,
-                loading: false,
-                errors: null
-            }
-
         case LOADING_UI:   
             return {
                 ...state,
                 loading: true
             }
+            
+        case OK_UI:
+            return initialState
 
+        case ERROR_UI:
+            return {
+                ...state,
+                loading: false,
+                errors: action.payload
+            }
+    
         default:
             return state    
     }

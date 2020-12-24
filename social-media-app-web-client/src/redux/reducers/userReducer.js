@@ -1,4 +1,4 @@
-import { SET_AUTHENTICATED, SET_UNAUTHENTICATED, SET_USER, LOADING_USER, LIKE_SCREAM, UNLIKE_SCREAM } from '../types'
+import { SET_AUTHENTICATED_USER, SET_UNAUTHENTICATED_USER, SET_USER, LOADING_USER, LIKE_SCREAM, UNLIKE_SCREAM } from '../types'
 
 const initialState = {
     authenticated: false,
@@ -10,28 +10,28 @@ const initialState = {
 
 const userReducer = function(state = initialState, action){
     switch(action.type){
-        case SET_AUTHENTICATED:
-            return {
-                ...state,
-                authenticated: true
-            }
-        
-        case SET_UNAUTHENTICATED:
-            return initialState
-
-        case SET_USER:   
-            return {
-                authenticated: true,
-                loading: false,
-                ...action.payload
-            }
-        
         case LOADING_USER:   
             return {
                 ...state,
                 loading: true,
             }
+            
+        case SET_AUTHENTICATED_USER:
+            return {
+                ...state,
+                authenticated: true
+            }
 
+        case SET_UNAUTHENTICATED_USER:
+            return initialState
+
+        case SET_USER:   
+            return {
+                ...state,
+                loading: false,
+                ...action.payload
+            }
+            
         case LIKE_SCREAM:
             return {
                 ...state,
@@ -47,7 +47,7 @@ const userReducer = function(state = initialState, action){
         case UNLIKE_SCREAM:
             return {
                 ...state,
-                likes: state.likes.filter((like) => like.screamId === action.payload.screamId)
+                likes: state.likes.filter((like) => like.screamId !== action.payload.screamId)
             }
 
         default:

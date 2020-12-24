@@ -3,8 +3,7 @@ import { SET_SCREAMS, SET_SCREAM, LIKE_SCREAM, UNLIKE_SCREAM, LOADING_DATA } fro
 const initialState = {
     screams: [],
     scream: {},
-    loading: false,
-    loadedByLoginOrSignup: false
+    loading: false
 }
 
 const dataReducer = function(state = initialState, action){
@@ -18,8 +17,7 @@ const dataReducer = function(state = initialState, action){
             return {
                 ...state,
                 loading: false,
-                screams: action.payload.screams,
-                loadedByLoginOrSignup: action.payload.loadedByLoginOrSignup
+                screams: action.payload
             }
         case SET_SCREAM:
             return {

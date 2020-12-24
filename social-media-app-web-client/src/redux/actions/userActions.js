@@ -1,24 +1,24 @@
-import { SET_USER, SET_ERRORS, LOADING_UI, CLEAR_ERRORS_UI, SET_UNAUTHENTICATED, LOADING_USER } from '../types'
-import { getScreams } from './dataActions'
+import { LOADING_UI, OK_UI, ERROR_UI, LOADING_USER, SET_AUTHENTICATED_USER, SET_UNAUTHENTICATED_USER, SET_USER } from '../types'
 import axios from 'axios'
+import dispatcherCreator from '../../util/dispatcherCreator'
 
 export const loginUser = (userData, history) => (dispatch) => {
     dispatch({ 
-        type: LOADING_UI //ui
+        type: LOADING_UI
     })
 
     axios.post('/login', userData)
     .then((result) => {
+        dispatch({ 
+            type: OK_UI
+        })
         setAuthorizationHeader(result.data.token)
-        dispatch(getScreams(true, () => dispatch({ type: CLEAR_ERRORS_UI }), history))
-        dispatch(getUserData())
-        // dispatch({ 
-        //     type: CLEAR_ERRORS //ui
-        // })
+        history.push('/')
+        dispatch(getUserData(dispatcherCreator([{ type: SET_AUTHENTICATED_USER }, { type: LOADING_USER }], dispatch), dispatcherCreator([{ type: SET_USER }], dispatch)))
     })
     .catch((error) => {
         dispatch({
-            type: SET_ERRORS,
+            type: ERROR_UI,
             payload: error.response.data
         })
     })
@@ -31,41 +31,19 @@ export const signupUser = (newUserData, history) => (dispatch) => {
 
     axios.post('/signup', newUserData)
     .then((result) => {
-        setAuthorizationHeader(result.data.token)
-        dispatch(getUserData())
         dispatch({ 
-            type: CLEAR_ERRORS_UI 
+            type: OK_UI 
         })
+        setAuthorizationHeader(result.data.token)
         history.push('/')
+        dispatch(getUserData(dispatcherCreator([{ type: SET_AUTHENTICATED_USER }, { type: LOADING_USER }], dispatch), dispatcherCreator([{ type: SET_USER }], dispatch))(dispatch))
     })
     .catch((error) => {
         dispatch({
-            type: SET_ERRORS,
+            type: ERROR_UI,
             payload: error.response.data
         })
     })
-}
-
-export const logoutUser = () => (dispatch) => {
-    localStorage.removeItem('FirebaseAuthenticationToken')
-    delete axios.defaults.headers.common['Authorization']
-    dispatch({
-        type: SET_UNAUTHENTICATED
-    })
-}
-
-export const getUserData = () => (dispatch) => {
-    dispatch({
-        type: LOADING_USER
-    })
-    axios.get('/user')
-    .then((result) => {
-        dispatch({ 
-            type: SET_USER, 
-            payload: result.data 
-        })
-    })
-    .catch((error) => console.log(error))
 }
 
 export const uploadImage = (formData) => (dispatch) => {
@@ -74,7 +52,7 @@ export const uploadImage = (formData) => (dispatch) => {
     })
     axios.post('/user/image', formData)
     .then(() => {
-        dispatch(getUserData())
+        dispatch(getUserData(undefined, dispatcherCreator([{ type: SET_USER }], dispatch)))
     })
     .catch((error) => console.log(error))
 }
@@ -85,18 +63,43 @@ export const editUserDetails = (userDetails, callback) => (dispatch) => {
     })
     axios.post('/user', userDetails)
     .then(() => {
-        dispatch(getUserData())
-
         dispatch({ 
-            type: CLEAR_ERRORS_UI 
+            type: OK_UI 
         })
+        dispatch(getUserData(dispatcherCreator([{ type: LOADING_USER }], dispatch), dispatcherCreator([{ type: SET_USER }], dispatch)))
+
         callback()
     })
     .catch((error) => {
         dispatch({
-            type: SET_ERRORS,
+            type: ERROR_UI,
             payload: error.response.data
         })
+    })
+}
+
+
+export const getUserData = (first_callback = undefined, success_callback = undefined) => (dispatch) => {
+    if(first_callback !== undefined) {
+        first_callback()
+    }
+
+    axios.get('/user')
+    .then((result) => {
+        if(success_callback !== undefined){
+            success_callback(result.data, result.data)
+        }
+
+    })
+    .catch((error) => console.log(error))
+    
+}
+
+export const logoutUser = () => (dispatch) => {
+    localStorage.removeItem('FirebaseAuthenticationToken')
+    delete axios.defaults.headers.common['Authorization']
+    dispatch({
+        type: SET_UNAUTHENTICATED_USER
     })
 }
 

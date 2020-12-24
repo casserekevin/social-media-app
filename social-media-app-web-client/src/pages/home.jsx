@@ -14,6 +14,10 @@ import Profile from '../components/Profile'
 
 class home extends Component {
 
+    componentDidMount() {
+        this.props.getScreams()
+    }
+
     render() {
         const { data: { screams, loading } } = this.props
 

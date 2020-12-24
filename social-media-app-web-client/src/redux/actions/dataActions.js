@@ -1,7 +1,7 @@
 import { SET_SCREAMS, LOADING_DATA, LIKE_SCREAM, UNLIKE_SCREAM } from '../types'
 import axios from 'axios'
 
-export const getScreams = (loadedByLoginOrSignup, callback = undefined, history = undefined) => (dispatch) => {
+export const getScreams = () => (dispatch) => {
     dispatch({
         type: LOADING_DATA
     })
@@ -9,28 +9,14 @@ export const getScreams = (loadedByLoginOrSignup, callback = undefined, history 
     .then((result) => {
         dispatch({
             type: SET_SCREAMS,
-            payload: {
-                screams: result.data,
-                loadedByLoginOrSignup
-            }
+            payload: result.data
         })
-
-        if(callback !== undefined){
-            callback()
-        }
-
-        if(history !== undefined){
-            history.push('/')
-        }
     })  
     .catch((error) => {
         console.error(error)
         dispatch({
             type: SET_SCREAMS,
-            payload: {
-                screams: [],
-                loadedByLoginOrSignup
-            }
+            payload: []
         })
     })
 }

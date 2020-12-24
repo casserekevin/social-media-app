@@ -20,13 +20,12 @@ import AuthenticatedRoute from './util/components/AuthenticatedRoute'
 //redux imports
 import { Provider } from 'react-redux'
 import store from './redux/store'
-import { SET_AUTHENTICATED } from './redux/types'
+import { LOADING_USER, SET_AUTHENTICATED_USER, SET_USER } from './redux/types'
 import { logoutUser, getUserData } from './redux/actions/userActions'
-import { getScreams } from './redux/actions/dataActions'
+import dispatcherCreator from './util/dispatcherCreator'
 
 //css
 import './global.css'
-
 
 
 const theme = createMuiTheme(themeFile)
@@ -39,12 +38,8 @@ if(token){
         window.location.href = '/login'
     }
     else{
-        store.dispatch({
-            type: SET_AUTHENTICATED
-        })
         axios.defaults.headers.common['Authorization'] = token
-        store.dispatch(getScreams(false))
-        store.dispatch(getUserData())
+        store.dispatch(getUserData(dispatcherCreator([{ type: SET_AUTHENTICATED_USER }, { type: LOADING_USER }], store.dispatch), dispatcherCreator([{ type: SET_USER }], store.dispatch)))
     }
 }
 
