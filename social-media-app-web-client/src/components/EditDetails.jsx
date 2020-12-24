@@ -10,6 +10,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 //Icons
 import EditIcon from '@material-ui/icons/Edit'
@@ -46,6 +47,10 @@ class EditDetails extends Component {
                 errors: nextProps.UI.errors
             })
         }
+
+        if(!nextProps.UI.errors && !nextProps.UI.loading){
+            this.handleClose()
+        }
     }
 
     mapUserDetailsToState = (credentials) => {
@@ -69,9 +74,7 @@ class EditDetails extends Component {
     }
 
     handleClose = () => {
-        this.setState({
-            open: false
-        })
+        this.setState({ open: false, errors: {} })
     }
 
     
@@ -93,7 +96,7 @@ class EditDetails extends Component {
     }
 
     render() {
-        const { classes } = this.props
+        const { classes, UI: { loading } } = this.props
         const { errors } = this.state
 
         return (
@@ -105,9 +108,9 @@ class EditDetails extends Component {
                     <DialogTitle>Edit your details</DialogTitle>
                     <DialogContent>
                         <form>
-                            <TextField name="bio" type='text' label='Bio' rows="3" placeholder="A short bio about yourself" multiline fullWidth value={this.state.bio} onChange={this.handleChange} className={classes.textField}></TextField>
-                            <TextField name="website" type='text' label='Website' placeholder="Your personal/professional website" fullWidth value={this.state.website} onChange={this.handleChange} className={classes.textField}></TextField>
-                            <TextField name="location" type='text' label='Location' placeholder="Where you live?" fullWidth value={this.state.location} onChange={this.handleChange} className={classes.textField}></TextField>
+                            <TextField name="bio" type='text' label='Bio' rows="3" placeholder="A short bio about yourself" multiline fullWidth value={this.state.bio} error={(errors.bio)? true : false} helperText={errors.bio} onChange={this.handleChange} className={classes.textField}/>
+                            <TextField name="website" type='text' label='Website' placeholder="Your personal/professional website" fullWidth value={this.state.website} error={(errors.website)? true : false} helperText={errors.website} onChange={this.handleChange} className={classes.textField}/>
+                            <TextField name="location" type='text' label='Location' placeholder="Where you live?" fullWidth value={this.state.location} error={(errors.location)? true : false} helperText={errors.location} onChange={this.handleChange} className={classes.textField}/>
                             {errors.general && (
                                 <Typography variant='body2' className={classes.customError}>
                                     {errors.general}
@@ -116,8 +119,13 @@ class EditDetails extends Component {
                         </form>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">Cancel</Button>
-                        <Button onClick={this.handleSubmit} color="primary">Save</Button>
+                        <Button color="primary" onClick={this.handleClose}>Cancel</Button>
+                        <Button variant="contained" color="primary" disabled={loading} onClick={this.handleSubmit} className={classes.button}>
+                            Edit
+                            {loading && (
+                                <CircularProgress size={30} className={classes.progress}/>
+                            )}
+                        </Button>
                     </DialogActions>
                 </Dialog>
             </Fragment>

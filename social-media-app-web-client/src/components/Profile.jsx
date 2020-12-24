@@ -18,7 +18,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LinkIcon from '@material-ui/icons/Link'
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday'
-import EditIcon from '@material-ui/icons/Edit'
+import AddAPhotoIcon from '@material-ui/icons/AddAPhoto'
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn'
 
 //Redux imports
@@ -114,7 +114,7 @@ class Profile extends Component {
                             <img src={imageUrl} alt="profile" className="profile-image"/>
                             <input type="file" id="imageInput" hidden='hidden' onChange={this.handleImageChange}/>
                             <MyButton tip="Edit profile picture" onClick={this.handleEditPicture} btnClassName="button">
-                                <EditIcon color="primary"/>
+                                <AddAPhotoIcon color="primary"/>
                             </MyButton>
                         </div>
                         <hr/>
