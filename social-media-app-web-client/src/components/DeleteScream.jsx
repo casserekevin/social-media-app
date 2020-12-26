@@ -27,8 +27,18 @@ const styles = {
 }
 
 class DeleteScream extends Component {
-    state = {
-        open: false
+    constructor(){
+        super()
+        this.state = {
+            open: false
+        }
+    }
+
+    componentWillUnmount() {
+        // fix Warning: Can't perform a React state update on an unmounted component
+        this.setState = (state,callback)=>{
+            return;
+        };
     }
 
     handleOpen = () => {
@@ -51,7 +61,7 @@ class DeleteScream extends Component {
                 <MyButton tip="Delete Scream" onClick={this.handleOpen} btnClassName={classes.deleteButton}>
                     <DeleteOutlineIcon color="secondary"/>
                 </MyButton>
-                <Dialog open={this.state.open} handleClose={this.handleClose} fullWidth maxWidth="sm">
+                <Dialog open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">
                     <DialogTitle>
                         Are you sure you want to delete this scream?
                     </DialogTitle>
