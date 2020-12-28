@@ -1,5 +1,6 @@
 // ui reducer types
 export const LOADING_UI = 'LOADING_UI'
+export const STOP_LOADING_UI = 'STOP_LOADING_UI'
 export const OK_UI = 'OK_UI'
 export const ERROR_UI = 'ERROR_UI'
 

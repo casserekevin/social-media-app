@@ -24,7 +24,8 @@ const dataReducer = function(state = initialState, action){
 
         case SET_SCREAM:
             return {
-                
+                ...state,
+                scream: action.payload
             }
 
         case POST_SCREAM:

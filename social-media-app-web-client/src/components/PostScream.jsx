@@ -16,7 +16,7 @@ import CloseIcon from '@material-ui/icons/Close'
 
 //Redux imports
 import { connect } from 'react-redux'
-import { postScream } from '../redux/actions/dataActions'
+import { postScream, OK_UI_func } from '../redux/actions/dataActions'
 import MyButton from '../util/components/MyButton';
 
 
@@ -24,8 +24,13 @@ const styles = (theme) => ({
     ...theme.global,
     closeButton: {
         position: 'absolute',
-        left: '90%',
+        left: '91%',
         top: '3%'
+    },
+    submitButton: {
+        positions: 'relative',
+        margin: '10px 0px',
+        float: 'right'
     }
 })
 
@@ -48,8 +53,7 @@ class PostScream extends Component {
         }
 
         if(!nextProps.UI.errors && !nextProps.UI.loading){
-            this.setState({ body: '' })
-            this.handleClose()
+            this.setState({ body: '', open: false, errors: {} })
         }
     }
 
@@ -58,6 +62,7 @@ class PostScream extends Component {
     }
 
     handleClose = () => {
+        this.props.OK_UI_func()
         this.setState({ open: false, errors: {} })
     }
 
@@ -95,7 +100,7 @@ class PostScream extends Component {
                     <DialogContent>
                         <form onSubmit={this.handleSubmit}>
                             <TextField name="body" type='text' label='SCREAM!!' rows="3" placeholder="Scream at your fellow apes" multiline fullWidth value={this.state.body} error={(errors.body)? true : false} helperText={errors.body} onChange={this.handleChange} className={classes.textField}/>
-                            <Button type="submit" variant="contained" color="primary" disabled={loading} className={classes.button}>
+                            <Button type="submit" variant="contained" color="primary" disabled={loading} className={classes.submitButton}>
                                 Submit
                                 {loading && (
                                     <CircularProgress size={30} className={classes.progress}/>
@@ -113,6 +118,7 @@ PostScream.propTypes = {
     classes: PropTypes.object.isRequired,
     UI: PropTypes.object.isRequired,
     postScream: PropTypes.func.isRequired,
+    OK_UI_func: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -120,7 +126,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-    postScream
+    postScream,
+    OK_UI_func
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(PostScream)) 

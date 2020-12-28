@@ -1,4 +1,4 @@
-import { LOADING_UI, OK_UI, ERROR_UI } from '../types'
+import { LOADING_UI, STOP_LOADING_UI, OK_UI, ERROR_UI } from '../types'
 
 const initialState = {
     loading: false,
@@ -13,6 +13,12 @@ const uiReducer = function(state = initialState, action){
                 loading: true
             }
             
+        case STOP_LOADING_UI:
+            return {
+                ...state,
+                loading: false
+            }
+
         case OK_UI:
             return initialState
 

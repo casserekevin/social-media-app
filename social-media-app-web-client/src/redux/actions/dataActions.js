@@ -1,4 +1,4 @@
-import { LOADING_UI, OK_UI, ERROR_UI, LOADING_DATA, SET_SCREAMS, POST_SCREAM, DELETE_SCREAM, LIKE_SCREAM, UNLIKE_SCREAM } from '../types'
+import { LOADING_UI, STOP_LOADING_UI, OK_UI, ERROR_UI, LOADING_DATA, SET_SCREAMS, SET_SCREAM, POST_SCREAM, DELETE_SCREAM, LIKE_SCREAM, UNLIKE_SCREAM } from '../types'
 import axios from 'axios'
 
 export const getScreams = () => (dispatch) => {
@@ -18,6 +18,27 @@ export const getScreams = () => (dispatch) => {
             type: SET_SCREAMS,
             payload: []
         })
+    })
+}
+
+export const getScream = (screamId) => (dispatch) => {
+    dispatch({
+        type: LOADING_UI
+    })
+
+    axios.get(`/scream/${screamId}`)
+    .then((result) => {
+        dispatch({
+            type: SET_SCREAM,
+            payload: result.data
+        })
+        dispatch({
+            type: STOP_LOADING_UI
+        })
+
+    })
+    .catch((error) => {
+        console.error(error)
     })
 }
 
@@ -84,6 +105,12 @@ export const unlikeScream = (screamId) => (dispatch) => {
     })
     .catch((error) => {
         console.error(error)
+    })
+}
+
+export const OK_UI_func = () => (dispatch) => {
+    dispatch({ 
+        type: OK_UI
     })
 }
 
