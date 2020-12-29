@@ -26,7 +26,7 @@ const styles = {
     }
 }
 
-class DeleteScream extends Component {
+class DeleteScreamButton extends Component {
     constructor(){
         super()
         this.state = {
@@ -54,9 +54,9 @@ class DeleteScream extends Component {
     }
 
     render() {
-        const { classes } = this.props
+        const { classes, userHandle, user: { authenticated, credentials: { handle } } } = this.props
 
-        return (
+        const deleteScreamButton = (authenticated && userHandle === handle) ? (
             <Fragment>
                 <MyButton tip="Delete Scream" onClick={this.handleOpen} btnClassName={classes.deleteButton}>
                     <DeleteOutlineIcon color="secondary"/>
@@ -75,18 +75,28 @@ class DeleteScream extends Component {
                     </DialogActions>
                 </Dialog>
             </Fragment>
+        ) : (
+            null
         )
+
+        return deleteScreamButton
     }
 }
 
-DeleteScream.propTypes = {
+DeleteScreamButton.propTypes = {
     classes: PropTypes.object.isRequired,
     screamId: PropTypes.string.isRequired,
+    userHandle: PropTypes.string.isRequired,
+    user: PropTypes.object.isRequired,
     deleteScream: PropTypes.func.isRequired,
 }
+
+const mapStateToProps = (state) => ({
+    user: state.user
+})
 
 const mapActionsToProps = {
     deleteScream
 }
 
-export default connect(null, mapActionsToProps)(withStyles(styles)(DeleteScream))
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(DeleteScreamButton))
