@@ -21,11 +21,12 @@ import ChatIcon from '@material-ui/icons/Chat'
 
 //Redux imports
 import { connect } from 'react-redux'
-import { getScream } from '../redux/actions/dataActions'
+import { getScream } from '../../redux/actions/dataActions'
 
 //Created Components imports
 import LikeButton from './LikeButton'
-import MyButton from '../util/components/MyButton';
+import Comments from './Comments'
+import MyButton from '../../util/components/MyButton';
 
 
 const styles = (theme) => ({
@@ -52,11 +53,6 @@ const styles = (theme) => ({
     dialogContent: {
         padding: 20
     },
-    invisibleSeparator: {
-        border: 'none',
-        margin: 4,
-    },
-
 })
 
 class ScreamDialogButton extends Component {
@@ -80,7 +76,7 @@ class ScreamDialogButton extends Component {
     render() {
         dayjs.locale(ptbr)
 
-        const { classes, screamId, UI: { loading }, data: { scream: { body, createdAt, userImage, userHandle, likeCount, commentCount } } } = this.props
+        const { classes, screamId, UI: { loading }, data: { scream: { body, createdAt, userImage, userHandle, likeCount, commentCount, comments } } } = this.props
 
         const dialogMarkup = (loading)? (
             <div className={classes.spinnerDiv}>
@@ -111,6 +107,8 @@ class ScreamDialogButton extends Component {
                     </MyButton>
                     <span>{commentCount} comments</span> 
                 </Grid>
+                <hr className={classes.visibleSeparator}/>
+                <Comments comments={comments}/>
             </Grid>
         )
 

@@ -15,8 +15,8 @@ import NotificationsIcon from '@material-ui/icons/Notifications'
 import { connect } from 'react-redux'
 
 //Created Components imports
-import PostScream from './PostScream'
-import MyButton from '../util/components/MyButton'
+import PostScream from '../scream/PostScream'
+import MyButton from '../../util/components/MyButton'
 
 
 class Navbar extends Component {

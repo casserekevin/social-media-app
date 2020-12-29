@@ -23,11 +23,11 @@ import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn'
 
 //Redux imports
 import { connect } from 'react-redux'
-import { logoutUser, uploadImage } from '../redux/actions/userActions'
+import { logoutUser, uploadImage } from '../../redux/actions/userActions'
 
 //Created Components imports
 import EditDetails from './EditDetails'
-import MyButton from '../util/components/MyButton'
+import MyButton from '../../util/components/MyButton'
 
 
 const styles = (theme) => ({

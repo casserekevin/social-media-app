@@ -24,7 +24,7 @@ import { connect } from 'react-redux'
 import DeleteScreamButton from './DeleteScreamButton'
 import ScreamDialogButton from './ScreamDialogButton'
 import LikeButton from './LikeButton'
-import MyButton from '../util/components/MyButton'
+import MyButton from '../../util/components/MyButton'
 
 const styles = {
     card: {

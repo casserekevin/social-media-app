@@ -8,10 +8,10 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 
 //Redux imports
 import { connect } from 'react-redux'
-import { likeScream, unlikeScream } from '../redux/actions/dataActions'
+import { likeScream, unlikeScream } from '../../redux/actions/dataActions'
 
 //Created Components imports
-import MyButton from '../util/components/MyButton';
+import MyButton from '../../util/components/MyButton';
 
 
 class LikeButton extends Component {

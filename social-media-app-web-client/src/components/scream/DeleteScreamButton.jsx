@@ -13,10 +13,10 @@ import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
 
 //Redux imports
 import { connect } from 'react-redux'
-import { deleteScream } from '../redux/actions/dataActions'
+import { deleteScream } from '../../redux/actions/dataActions'
 
 //Created Components imports
-import MyButton from '../util/components/MyButton'
+import MyButton from '../../util/components/MyButton'
 
 const styles = {
     deleteButton: {

@@ -16,8 +16,8 @@ import CloseIcon from '@material-ui/icons/Close'
 
 //Redux imports
 import { connect } from 'react-redux'
-import { postScream, OK_UI_func } from '../redux/actions/dataActions'
-import MyButton from '../util/components/MyButton';
+import { postScream, OK_UI_func } from '../../redux/actions/dataActions'
+import MyButton from '../../util/components/MyButton';
 
 
 const styles = (theme) => ({
