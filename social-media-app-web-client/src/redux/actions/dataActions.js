@@ -1,4 +1,4 @@
-import { LOADING_UI, STOP_LOADING_UI, OK_UI, ERROR_UI, LOADING_DATA, SET_SCREAMS, SET_SCREAM, POST_SCREAM, DELETE_SCREAM, LIKE_SCREAM, UNLIKE_SCREAM } from '../types'
+import { LOADING_UI, STOP_LOADING_UI, OK_UI, ERROR_UI, LOADING_DATA, SET_SCREAMS, SET_SCREAM, POST_SCREAM, DELETE_SCREAM, LIKE_SCREAM, UNLIKE_SCREAM, SUBMIT_COMMENT } from '../types'
 import axios from 'axios'
 
 export const getScreams = () => (dispatch) => {
@@ -48,9 +48,7 @@ export const postScream = (newScream) => (dispatch) => {
     })
     axios.post('/scream', newScream)
     .then((result) => {
-        dispatch({ 
-            type: OK_UI
-        })
+        dispatch(OK_UI_func())
         dispatch({
             type: POST_SCREAM,
             payload: result.data
@@ -63,6 +61,23 @@ export const postScream = (newScream) => (dispatch) => {
         })
     })
 
+}
+
+export const submitComment = (screamId, commentData) => (dispatch) => {
+    axios.post(`/scream/${screamId}/comment`, commentData)
+    .then((result) => {
+        dispatch({
+            type: SUBMIT_COMMENT,
+            payload: result.data
+        })
+        dispatch(OK_UI_func())
+    })
+    .catch((error) => {
+        dispatch({
+            type: ERROR_UI,
+            payload: error.response.data
+        })
+    })
 }
 
 export const deleteScream = (screamId, callback) => (dispatch) => {

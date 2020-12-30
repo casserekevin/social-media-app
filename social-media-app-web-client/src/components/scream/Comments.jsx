@@ -26,13 +26,6 @@ const styles = (theme) => ({
 })
 
 class Comments extends Component {
-    constructor(){  
-        super()
-        this.state = {
-        }
-
-    }
-
 
     render() {
         dayjs.locale(ptbr)

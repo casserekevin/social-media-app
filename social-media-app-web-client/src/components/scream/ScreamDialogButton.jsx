@@ -21,10 +21,11 @@ import ChatIcon from '@material-ui/icons/Chat'
 
 //Redux imports
 import { connect } from 'react-redux'
-import { getScream } from '../../redux/actions/dataActions'
+import { getScream, OK_UI_func } from '../../redux/actions/dataActions'
 
 //Created Components imports
 import LikeButton from './LikeButton'
+import CommentForm from './CommentForm'
 import Comments from './Comments'
 import MyButton from '../../util/components/MyButton';
 
@@ -71,6 +72,7 @@ class ScreamDialogButton extends Component {
 
     handleClose = () => {
         this.setState({ open: false })
+        this.props.OK_UI_func()
     }
 
     render() {
@@ -108,6 +110,7 @@ class ScreamDialogButton extends Component {
                     <span>{commentCount} comments</span> 
                 </Grid>
                 <hr className={classes.visibleSeparator}/>
+                <CommentForm screamId={screamId}/>
                 <Comments comments={comments}/>
             </Grid>
         )
@@ -136,6 +139,7 @@ ScreamDialogButton.propTypes = {
     UI: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
     getScream: PropTypes.func.isRequired,
+    OK_UI_func: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -144,7 +148,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-    getScream
+    getScream,
+    OK_UI_func
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(ScreamDialogButton)) 
