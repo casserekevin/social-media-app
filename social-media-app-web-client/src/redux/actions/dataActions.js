@@ -123,6 +123,26 @@ export const unlikeScream = (screamId) => (dispatch) => {
     })
 }
 
+export const getPublicUserData = (userHandle) => (dispatch) => {
+    dispatch({
+        type: LOADING_DATA
+    })
+
+    axios.get(`/user/${userHandle}`)
+    .then((result) => {
+        dispatch({
+            type: SET_SCREAMS,
+            payload: result.data.screams
+        })
+    })
+    .catch((error) => {
+        dispatch({
+            type: SET_SCREAMS,
+            payload: null
+        })
+    })  
+}
+
 export const OK_UI_func = () => (dispatch) => {
     dispatch({ 
         type: OK_UI
