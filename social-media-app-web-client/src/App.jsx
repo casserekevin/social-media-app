@@ -31,6 +31,8 @@ import './global.css'
 
 const theme = createMuiTheme(themeFile)
 
+axios.defaults.baseURL = "https://southamerica-east1-social-media-app-kvc00.cloudfunctions.net/api"
+
 const token = localStorage.FirebaseAuthenticationToken
 if(token){
     const decodedToken = jwtDecode(token)
