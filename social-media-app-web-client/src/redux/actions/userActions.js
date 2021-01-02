@@ -1,4 +1,4 @@
-import { LOADING_UI, OK_UI, ERROR_UI, LOADING_USER, SET_AUTHENTICATED_USER, SET_UNAUTHENTICATED_USER, SET_USER } from '../types'
+import { LOADING_UI, OK_UI, ERROR_UI, LOADING_USER, SET_AUTHENTICATED_USER, SET_UNAUTHENTICATED_USER, SET_USER, MARK_NOTIFICATIONS_READ } from '../types'
 import axios from 'axios'
 import dispatcherCreator from '../../util/dispatcherCreator'
 
@@ -78,7 +78,6 @@ export const editUserDetails = (userDetails, callback) => (dispatch) => {
     })
 }
 
-
 export const getUserData = (first_callback = undefined, success_callback = undefined) => (dispatch) => {
     if(first_callback !== undefined) {
         first_callback()
@@ -100,6 +99,18 @@ export const logoutUser = () => (dispatch) => {
     delete axios.defaults.headers.common['Authorization']
     dispatch({
         type: SET_UNAUTHENTICATED_USER
+    })
+}
+
+export const markNotificationsRead = (notificationsIds) => (dispatch) => {
+    axios.post('/notifications', notificationsIds)
+    .then((result) => {
+        dispatch({
+            type: MARK_NOTIFICATIONS_READ
+        })
+    })
+    .catch((error) => {
+        console.error(error)
     })
 }
 

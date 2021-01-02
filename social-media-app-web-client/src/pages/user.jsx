@@ -17,13 +17,22 @@ class user extends Component {
     constructor(){
         super()
         this.state = {
-            profile: null
+            profile: null,
+            screamIdParam: null
         }
     }
 
 
     componentDidMount(){
         const handle = this.props.match.params.handle
+        const screamId = this.props.match.params.screamId
+
+        if(screamId){
+            this.setState({
+                screamIdParam: screamId
+            })
+        }
+
         this.props.getPublicUserData(handle)
         axios.get(`/user/${handle}`)
         .then((result) => {
@@ -38,6 +47,7 @@ class user extends Component {
 
     render() {
         const { data: { screams, loading } } = this.props
+        const { screamIdParam } = this.state
 
         let screamsMarkup = (loading) ? (
             <p>Loading data...</p>
@@ -45,7 +55,18 @@ class user extends Component {
             (screams === null) ? (
                 <p>No screams from this user</p>
             ) : (
-                screams.map((scream) => <Scream key={scream.screamId} scream={scream}/>)
+                (!screamIdParam) ? (
+                    screams.map((scream) => <Scream key={scream.screamId} scream={scream}/>)
+                ) : (
+                    screams.map((scream) => {
+                        if(scream.screamId !== screamIdParam) {
+                            return <Scream key={scream.screamId} scream={scream}/>
+                        }
+                        else{
+                            return <Scream key={scream.screamId} scream={scream} openDialog/>
+                        }
+                    })
+                )
             )
         )
 
