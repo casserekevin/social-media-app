@@ -17,9 +17,6 @@ import Typography from '@material-ui/core/Typography'
 //Icons
 import ChatIcon from '@material-ui/icons/Chat'
 
-//Redux imports
-import { connect } from 'react-redux'
-
 //Created Components imports
 import DeleteScreamButton from './DeleteScreamButton'
 import ScreamDialogButton from './ScreamDialogButton'
@@ -76,4 +73,4 @@ Scream.propTypes = {
     openDialog: PropTypes.bool
 }
 
-export default connect(null)(withStyles(styles)(Scream))
+export default withStyles(styles)(Scream)

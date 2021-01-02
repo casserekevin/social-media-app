@@ -12,6 +12,8 @@ import { getPublicUserData } from '../redux/actions/dataActions'
 //Created Components imports
 import Scream from '../components/scream/Scream'
 import StaticProfile from '../components/profile/StaticProfile'
+import ScreamSkeleton from '../util/components/ScreamSkeleton'
+import ProfileSkeleton from '../util/components/ProfileSkeleton'
 
 class user extends Component {
     constructor(){
@@ -50,7 +52,7 @@ class user extends Component {
         const { screamIdParam } = this.state
 
         let screamsMarkup = (loading) ? (
-            <p>Loading data...</p>
+            <ScreamSkeleton/>
         ) : (
             (screams === null) ? (
                 <p>No screams from this user</p>
@@ -77,7 +79,7 @@ class user extends Component {
                 </Grid>
                 <Grid item sm={4} xs={12}>
                     {(this.state.profile === null) ? (
-                        <p>Loading profile...</p>
+                        <ProfileSkeleton/>
                     ) : (
                         <StaticProfile profile={this.state.profile}/>
                     )}

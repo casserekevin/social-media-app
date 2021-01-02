@@ -11,6 +11,7 @@ import { getScreams } from '../redux/actions/dataActions'
 //Created Components imports
 import Scream from '../components/scream/Scream'
 import Profile from '../components/profile/Profile'
+import ScreamSkeleton from '../util/components/ScreamSkeleton'
 
 class home extends Component {
 
@@ -24,7 +25,7 @@ class home extends Component {
         let recentScreamsMarkup = !loading ? (
             screams.map((scream) => <Scream key={scream.screamId} scream={scream}/>)
         ) : (
-            <p>Loading data...</p>
+            <ScreamSkeleton/>
         )
 
         return (
